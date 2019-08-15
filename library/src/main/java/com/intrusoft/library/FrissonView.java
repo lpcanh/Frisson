@@ -11,10 +11,11 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.v7.graphics.Palette;
+import android.os.Build;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.palette.graphics.Palette;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -223,7 +224,12 @@ public class FrissonView extends View {
         }
         paint.setAlpha(alphaValue);
         canvas.drawPath(path, paint);
-        canvas.clipRect(viewBounds, Region.Op.UNION);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            canvas.clipRect(viewBounds);
+        } else {
+            canvas.clipRect(viewBounds, Region.Op.UNION);
+        }
         for (int i = 1; i <= tideCount; i++) {
             path = Utils.getWavePath(width, height, tideHeight, i * i * 20, 3);
             canvas.drawPath(path, paint);
